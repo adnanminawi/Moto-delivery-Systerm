@@ -4,12 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { adminStyles } from "./admin-styles";
-import {
-  type Driver,
-  type DriverStatus,
-  initialDrivers,
-  readDrivers,
-} from "./driver-data";
+import { type Driver, type DriverStatus, driverData } from "./driver-data";
 
 const driverStatusColors = {
   Available: "bg-teal-400/10 text-teal-200",
@@ -18,11 +13,11 @@ const driverStatusColors = {
 };
 
 function useStoredDrivers() {
-  const [drivers, setDrivers] = useState<Driver[]>(initialDrivers);
+  const [drivers, setDrivers] = useState<Driver[]>(driverData.initialDrivers);
 
   useEffect(() => {
     const loadSavedDrivers = window.setTimeout(() => {
-      setDrivers(readDrivers());
+      setDrivers(driverData.readDrivers());
     }, 0);
 
     return () => window.clearTimeout(loadSavedDrivers);

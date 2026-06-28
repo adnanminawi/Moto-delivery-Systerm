@@ -4,7 +4,7 @@ import type { FormEvent } from "react";
 import Link from "next/link";
 import { useState } from "react";
 import { adminStyles } from "./admin-styles";
-import { type Driver, readDrivers, saveDrivers } from "./driver-data";
+import { type Driver, driverData } from "./driver-data";
 
 const driverFields = [
   {
@@ -100,7 +100,7 @@ export default function CreateDriverForm() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const savedDrivers = readDrivers();
+    const savedDrivers = driverData.readDrivers();
 
     const newDriver: Driver = {
       id: `driver-${Date.now()}`,
@@ -114,7 +114,7 @@ export default function CreateDriverForm() {
       deliveries: 0,
     };
 
-    saveDrivers([...savedDrivers, newDriver]);
+    driverData.saveDrivers([...savedDrivers, newDriver]);
 
     form.reset();
     setMessage("Driver account created in frontend storage.");
@@ -134,13 +134,6 @@ export default function CreateDriverForm() {
               <FormField key={field.id} {...field} />
             ))}
           </div>
-
-          <FormField
-            id="driver-password"
-            label="Temporary password"
-            placeholder="Create temporary password"
-            type="password"
-          />
 
           <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
             <button

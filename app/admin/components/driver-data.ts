@@ -1,4 +1,4 @@
-export const DRIVER_STORAGE_KEY = "moto-admin-drivers";
+const DRIVER_STORAGE_KEY = "moto-admin-drivers";
 
 export type DriverStatus = "Available" | "On order" | "Offline";
 
@@ -16,7 +16,7 @@ export type Driver = {
 
 type SavedDriver = Partial<Driver>;
 
-export const initialDrivers: Driver[] = [
+const initialDrivers: Driver[] = [
   {
     id: "driver-ali",
     name: "Ali Mansour",
@@ -63,7 +63,7 @@ export const initialDrivers: Driver[] = [
   },
 ];
 
-export const readDrivers = () => {
+const readDrivers = () => {
   return readStorage<SavedDriver[]>(DRIVER_STORAGE_KEY, initialDrivers).map(
     (driver, index) => {
       const demoDriver = initialDrivers.find((item) => item.id === driver.id);
@@ -83,8 +83,14 @@ export const readDrivers = () => {
   );
 };
 
-export const saveDrivers = (drivers: Driver[]) => {
+const saveDrivers = (drivers: Driver[]) => {
   saveStorage(DRIVER_STORAGE_KEY, drivers);
+};
+
+export const driverData = {
+  initialDrivers,
+  readDrivers,
+  saveDrivers,
 };
 
 function readStorage<T>(key: string, fallback: T): T {

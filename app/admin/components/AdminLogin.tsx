@@ -2,7 +2,9 @@
 
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const SAVED_ADMIN_EMAIL_KEY = "moto-admin-email";
 
 function BrandHeader() {
   return (
@@ -37,12 +39,28 @@ function LoginIntro() {
 
 export default function AdminLogin() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [rememberDevice, setRememberDevice] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const loadRememberedEmail = window.setTimeout(() => {
+      const savedEmail = readRememberedEmail();
+
+      if (savedEmail) {
+        setEmail(savedEmail);
+        setRememberDevice(true);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(loadRememberedEmail);
+  }, []);
 
   function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    saveRememberedEmail(email, rememberDevice);
     setMessage("Opening admin dashboard...");
     router.push("/admin/dashboard");
   }
@@ -67,9 +85,11 @@ export default function AdminLogin() {
                 className="h-12 w-full rounded-md border border-white/10 bg-slate-950/70 px-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-orange-400 focus:ring-4 focus:ring-orange-500/15"
                 id="admin-email"
                 name="email"
+                onChange={(event) => setEmail(event.target.value)}
                 placeholder="admin@motodelivery.com"
                 required
                 type="email"
+                value={email}
               />
             </div>
 
@@ -83,7 +103,7 @@ export default function AdminLogin() {
                 </label>
                 <button
                   className="rounded-md px-2 py-1 text-xs font-bold uppercase tracking-[0.12em] text-orange-300 transition hover:bg-orange-400/10"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword((currentValue) => !currentValue)}
                   type="button"
                 >
                   {showPassword ? "Hide" : "Show"}
@@ -103,6 +123,8 @@ export default function AdminLogin() {
             <label className="flex items-center gap-3 text-sm text-slate-300">
               <input
                 className="h-4 w-4 rounded border-white/20 bg-slate-950 text-orange-500 focus:ring-orange-500"
+                checked={rememberDevice}
+                onChange={(event) => setRememberDevice(event.target.checked)}
                 type="checkbox"
               />
               Remember this admin device
@@ -126,4 +148,25 @@ export default function AdminLogin() {
       </section>
     </main>
   );
+}
+
+function readRememberedEmail() {
+  try {
+    return localStorage.getItem(SAVED_ADMIN_EMAIL_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function saveRememberedEmail(email: string, rememberDevice: boolean) {
+  try {
+    if (rememberDevice) {
+      localStorage.setItem(SAVED_ADMIN_EMAIL_KEY, email);
+      return;
+    }
+
+    localStorage.removeItem(SAVED_ADMIN_EMAIL_KEY);
+  } catch {
+    // Local storage can be blocked by the browser. Login still works without it.
+  }
 }
