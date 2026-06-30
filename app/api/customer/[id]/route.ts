@@ -1,7 +1,7 @@
 import db from "@/lib/db";
 
 
-export async function GET(request, { params }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     try{
         const [one_cust] = await db.query("SELECT id, name, phone FROM customer Where id =?",

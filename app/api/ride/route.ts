@@ -9,10 +9,10 @@ export async function GET() {
     }
 }
 
-export async function POST(request){
+export async function POST(request:Request){
   const {name, phone,pickup_lat,pickup_lng,pickup_address,destination_lat,destination_lng,destination_address,status} = await request.json();
   try{
-    const[get_cust]= await db.query("SELECT id FROM customer Where phone=?",
+    const[get_cust]= await db.query<RowDataPacket[]>("SELECT id FROM customer Where phone=?",
     [phone]);
 
 
@@ -20,7 +20,7 @@ let customer_id;
 if (get_cust.length > 0) {
 customer_id = get_cust[0].id;
 } else {
-const [newCust] = await db.query("INSERT INTO customer (name, phone) VALUES (?, ?)", [name, phone]);
+const [newCust] = await db.query<ResultSetHeader>("INSERT INTO customer (name, phone) VALUES (?, ?)", [name, phone]);
 customer_id = newCust.insertId;
 }
 

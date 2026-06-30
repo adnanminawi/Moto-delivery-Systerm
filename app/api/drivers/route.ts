@@ -10,7 +10,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request){
+export async function POST(request: Request){
   const { name, phone, password } = await request.json();
   try{
     const password_hash = await bcrypt.hash(password, 10);
