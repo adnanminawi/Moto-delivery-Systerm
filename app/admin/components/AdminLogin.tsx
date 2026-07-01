@@ -3,39 +3,9 @@
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-const SAVED_ADMIN_EMAIL_KEY = "moto-admin-email";
-
-function BrandHeader() {
-  return (
-    <div className="mb-6 flex items-center gap-3">
-      <div className="grid h-12 w-12 place-items-center rounded-md bg-orange-500 font-black text-slate-950 shadow-lg shadow-orange-500/25">
-        MD
-      </div>
-
-      <div>
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-300">
-          Moto Delivery System
-        </p>
-        <p className="text-sm text-slate-400">Admin access</p>
-      </div>
-    </div>
-  );
-}
-
-function LoginIntro() {
-  return (
-    <div className="mb-7">
-      <p className="mb-3 inline-flex rounded-md border border-orange-400/30 bg-orange-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-orange-200">
-        Admin only
-      </p>
-      <h1 className="text-3xl font-black tracking-tight text-white">Login</h1>
-      <p className="mt-3 text-sm leading-6 text-slate-400">
-        Access the admin panel to manage driver accounts.
-      </p>
-    </div>
-  );
-}
+import BrandHeader from "./BrandHeader";
+import LoginIntro from "./LoginIntro";
+import { rememberedEmail } from "./remembered-email";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -46,7 +16,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     const loadRememberedEmail = window.setTimeout(() => {
-      const savedEmail = readRememberedEmail();
+      const savedEmail = rememberedEmail.read();
 
       if (savedEmail) {
         setEmail(savedEmail);
@@ -60,7 +30,7 @@ export default function AdminLogin() {
   function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    saveRememberedEmail(email, rememberDevice);
+    rememberedEmail.save(email, rememberDevice);
     setMessage("Opening admin dashboard...");
     router.push("/admin/dashboard");
   }
@@ -122,8 +92,8 @@ export default function AdminLogin() {
 
             <label className="flex items-center gap-3 text-sm text-slate-300">
               <input
-                className="h-4 w-4 rounded border-white/20 bg-slate-950 text-orange-500 focus:ring-orange-500"
                 checked={rememberDevice}
+                className="h-4 w-4 rounded border-white/20 bg-slate-950 text-orange-500 focus:ring-orange-500"
                 onChange={(event) => setRememberDevice(event.target.checked)}
                 type="checkbox"
               />
@@ -148,25 +118,4 @@ export default function AdminLogin() {
       </section>
     </main>
   );
-}
-
-function readRememberedEmail() {
-  try {
-    return localStorage.getItem(SAVED_ADMIN_EMAIL_KEY) ?? "";
-  } catch {
-    return "";
-  }
-}
-
-function saveRememberedEmail(email: string, rememberDevice: boolean) {
-  try {
-    if (rememberDevice) {
-      localStorage.setItem(SAVED_ADMIN_EMAIL_KEY, email);
-      return;
-    }
-
-    localStorage.removeItem(SAVED_ADMIN_EMAIL_KEY);
-  } catch {
-    // Local storage can be blocked by the browser. Login still works without it.
-  }
 }

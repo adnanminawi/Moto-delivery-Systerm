@@ -3,7 +3,8 @@
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useState } from "react";
-import { adminStyles } from "./admin-styles";
+import CreateDriverHeader from "./CreateDriverHeader";
+import FormField from "./FormField";
 import { type Driver, driverData } from "./driver-data";
 
 const driverFields = [
@@ -45,53 +46,6 @@ const driverFields = [
   },
 ];
 
-function PageHeader() {
-  return (
-    <header className="mb-8">
-      <Link className="text-sm font-bold text-orange-300" href="/admin/dashboard">
-        Back to dashboard
-      </Link>
-      <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-orange-300">
-        Admin only
-      </p>
-      <h1 className="mt-2 text-3xl font-black text-white">
-        Create driver account
-      </h1>
-      <p className="mt-3 text-sm leading-6 text-slate-400">
-        Add the driver information the admin needs before the driver starts work.
-      </p>
-    </header>
-  );
-}
-
-function FormField({
-  id,
-  label,
-  placeholder,
-  type,
-}: {
-  id: string;
-  label: string;
-  placeholder: string;
-  type: string;
-}) {
-  return (
-    <div>
-      <label className="mb-2 block text-sm font-semibold text-slate-200" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        className={adminStyles.input}
-        id={id}
-        name={id}
-        placeholder={placeholder}
-        required
-        type={type}
-      />
-    </div>
-  );
-}
-
 export default function CreateDriverForm() {
   const [message, setMessage] = useState("");
 
@@ -123,7 +77,7 @@ export default function CreateDriverForm() {
   return (
     <main className="min-h-screen bg-[#101114] px-5 py-6 text-slate-100 sm:px-8">
       <section className="mx-auto max-w-3xl">
-        <PageHeader />
+        <CreateDriverHeader />
 
         <form
           className="space-y-5 rounded-lg border border-white/10 bg-white/[0.06] p-6 shadow-2xl shadow-black/35 backdrop-blur sm:p-8"
