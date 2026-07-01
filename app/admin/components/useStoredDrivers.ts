@@ -7,6 +7,7 @@ export default function useStoredDrivers() {
   const [drivers, setDrivers] = useState<Driver[]>(driverData.initialDrivers);
 
   useEffect(() => {
+    // Load browser storage after the first render to avoid a Next.js hydration warning.
     const loadSavedDrivers = window.setTimeout(() => {
       setDrivers(driverData.readDrivers());
     }, 0);

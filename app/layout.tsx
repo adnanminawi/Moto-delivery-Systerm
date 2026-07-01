@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Moto Delivery Admin Login",
-  description: "Admin login screen for the Moto Delivery System.",
+  title: "Moto Delivery Admin",
+  description: "Admin frontend for the Moto Delivery System.",
 };
 
 export default function RootLayout({

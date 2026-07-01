@@ -32,7 +32,7 @@ export default function CreateDriverForm() {
     driverData.saveDrivers([...savedDrivers, newDriver]);
 
     form.reset();
-    setMessage("Driver account created in frontend storage.");
+    setMessage("Driver account created.");
   }
 
   return (
