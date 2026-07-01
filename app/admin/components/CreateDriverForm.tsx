@@ -7,45 +7,6 @@ import CreateDriverHeader from "./CreateDriverHeader";
 import FormField from "./FormField";
 import { type Driver, driverData } from "./driver-data";
 
-const driverFields = [
-  {
-    id: "driver-name",
-    label: "Full name",
-    placeholder: "Driver full name",
-    type: "text",
-  },
-  {
-    id: "driver-phone",
-    label: "Phone number",
-    placeholder: "+961 70 000 000",
-    type: "tel",
-  },
-  {
-    id: "driver-email",
-    label: "Email",
-    placeholder: "driver@motodelivery.com",
-    type: "email",
-  },
-  {
-    id: "driver-zone",
-    label: "Work zone",
-    placeholder: "Beirut",
-    type: "text",
-  },
-  {
-    id: "driver-vehicle",
-    label: "Motorcycle model",
-    placeholder: "Honda Wave",
-    type: "text",
-  },
-  {
-    id: "driver-plate",
-    label: "Plate number",
-    placeholder: "M 123456",
-    type: "text",
-  },
-];
-
 export default function CreateDriverForm() {
   const [message, setMessage] = useState("");
 
@@ -84,9 +45,42 @@ export default function CreateDriverForm() {
           onSubmit={handleCreateDriver}
         >
           <div className="grid gap-5 sm:grid-cols-2">
-            {driverFields.map((field) => (
-              <FormField key={field.id} {...field} />
-            ))}
+            <FormField
+              id="driver-name"
+              label="Full name"
+              placeholder="Driver full name"
+              type="text"
+            />
+            <FormField
+              id="driver-phone"
+              label="Phone number"
+              placeholder="+961 70 000 000"
+              type="tel"
+            />
+            <FormField
+              id="driver-email"
+              label="Email"
+              placeholder="driver@motodelivery.com"
+              type="email"
+            />
+            <FormField
+              id="driver-zone"
+              label="Work zone"
+              placeholder="Beirut"
+              type="text"
+            />
+            <FormField
+              id="driver-vehicle"
+              label="Motorcycle model"
+              placeholder="Honda Wave"
+              type="text"
+            />
+            <FormField
+              id="driver-plate"
+              label="Plate number"
+              placeholder="M 123456"
+              type="text"
+            />
           </div>
 
           <div className="grid gap-3 sm:grid-cols-[1fr_auto]">

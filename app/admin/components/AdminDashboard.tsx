@@ -11,6 +11,7 @@ import useStoredDrivers from "./useStoredDrivers";
 
 export default function AdminDashboard() {
   const drivers = useStoredDrivers();
+  const totalDrivers = drivers.length;
   const availableDrivers = drivers.filter(
     (driver) => driver.status === "Available",
   ).length;
@@ -30,7 +31,7 @@ export default function AdminDashboard() {
             <StatCard
               color="bg-orange-500"
               label="Total Drivers"
-              value={drivers.length}
+              value={totalDrivers}
             />
             <StatCard
               color="bg-teal-600"

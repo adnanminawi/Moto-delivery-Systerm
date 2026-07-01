@@ -14,8 +14,6 @@ export type Driver = {
   deliveries: number;
 };
 
-type SavedDriver = Partial<Driver>;
-
 const initialDrivers: Driver[] = [
   {
     id: "driver-ali",
@@ -63,28 +61,34 @@ const initialDrivers: Driver[] = [
   },
 ];
 
-const readDrivers = () => {
-  return readStorage<SavedDriver[]>(DRIVER_STORAGE_KEY, initialDrivers).map(
-    (driver, index) => {
-      const demoDriver = initialDrivers.find((item) => item.id === driver.id);
+const readDrivers = (): Driver[] => {
+  if (typeof window === "undefined") {
+    return initialDrivers;
+  }
 
-      return {
-        id: driver.id ?? demoDriver?.id ?? `driver-${index}`,
-        name: driver.name ?? demoDriver?.name ?? "New Driver",
-        email: driver.email ?? demoDriver?.email ?? "driver@motodelivery.com",
-        phone: driver.phone ?? demoDriver?.phone ?? "+961 70 000 000",
-        zone: driver.zone ?? demoDriver?.zone ?? "Beirut",
-        vehicle: driver.vehicle ?? demoDriver?.vehicle ?? "Motorcycle",
-        plate: driver.plate ?? demoDriver?.plate ?? "M 000000",
-        status: driver.status ?? demoDriver?.status ?? "Offline",
-        deliveries: driver.deliveries ?? demoDriver?.deliveries ?? 0,
-      };
-    },
-  );
+  const savedDrivers = localStorage.getItem(DRIVER_STORAGE_KEY);
+
+  if (!savedDrivers) {
+    return initialDrivers;
+  }
+
+  try {
+    const drivers = JSON.parse(savedDrivers);
+
+    if (Array.isArray(drivers)) {
+      return drivers as Driver[];
+    }
+  } catch {
+    return initialDrivers;
+  }
+
+  return initialDrivers;
 };
 
 const saveDrivers = (drivers: Driver[]) => {
-  saveStorage(DRIVER_STORAGE_KEY, drivers);
+  if (typeof window !== "undefined") {
+    localStorage.setItem(DRIVER_STORAGE_KEY, JSON.stringify(drivers));
+  }
 };
 
 export const driverData = {
@@ -92,22 +96,3 @@ export const driverData = {
   readDrivers,
   saveDrivers,
 };
-
-function readStorage<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") {
-    return fallback;
-  }
-
-  try {
-    const savedValue = localStorage.getItem(key);
-    return savedValue ? (JSON.parse(savedValue) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function saveStorage<T>(key: string, value: T) {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(key, JSON.stringify(value));
-  }
-}
