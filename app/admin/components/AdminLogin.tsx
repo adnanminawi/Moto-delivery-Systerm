@@ -2,35 +2,19 @@
 
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BrandHeader from "./BrandHeader";
 import LoginIntro from "./LoginIntro";
-import { rememberedEmail } from "./remembered-email";
 
 export default function AdminLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [rememberDevice, setRememberDevice] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    const loadRememberedEmail = window.setTimeout(() => {
-      const savedEmail = rememberedEmail.read();
-
-      if (savedEmail) {
-        setEmail(savedEmail);
-        setRememberDevice(true);
-      }
-    }, 0);
-
-    return () => window.clearTimeout(loadRememberedEmail);
-  }, []);
 
   function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    rememberedEmail.save(email, rememberDevice);
     setMessage("Opening admin dashboard...");
     router.push("/admin/dashboard");
   }
@@ -89,16 +73,6 @@ export default function AdminLogin() {
                 type={showPassword ? "text" : "password"}
               />
             </div>
-
-            <label className="flex items-center gap-3 text-sm text-slate-300">
-              <input
-                checked={rememberDevice}
-                className="h-4 w-4 rounded border-white/20 bg-slate-950 text-orange-500 focus:ring-orange-500"
-                onChange={(event) => setRememberDevice(event.target.checked)}
-                type="checkbox"
-              />
-              Remember this admin device
-            </label>
 
             <button
               className="h-12 w-full rounded-md bg-orange-500 px-5 text-sm font-black uppercase tracking-[0.14em] text-slate-950 shadow-lg shadow-orange-500/25 transition hover:bg-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-500/30"
