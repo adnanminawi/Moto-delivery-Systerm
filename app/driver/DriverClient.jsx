@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Map from "@/components/Map";
+import Map from "@/components/DriverMap";
 import styles from "./page.module.css";
 
 export default function DriverClient() {
