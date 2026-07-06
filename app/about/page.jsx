@@ -45,10 +45,10 @@ export default function About() {
     </div>
 
     <div className="hidden md:flex gap-10 font-semibold">
-      <a href="#" className="hover:text-orange-400 transition">Home</a>
-      <a href="#" className="hover:text-orange-400 transition">About</a>
-      <a href="#features" className="hover:text-orange-400 transition">Features</a>
-      <a href="#" className="hover:text-orange-400 transition">Contact</a>
+      <a href="/" className="hover:text-orange-400 transition">Home</a>
+      <a href="/about" className="hover:text-orange-400 transition">About</a>
+      <a href="/features" className="hover:text-orange-400 transition">Features</a>
+      <a href="/contact" className="hover:text-orange-400 transition">Contact</a>
     </div>
 
    
