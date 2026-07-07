@@ -4,7 +4,7 @@ export async function POST(req: Request) {
   try {
     const { driverId, status } = await req.json();
 
-    // 1. Validate input
+    // Validate input
     if (!driverId || !status) {
       return Response.json(
         { error: "Missing fields" },
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Validate status value
+    // Validate status value
     if (status !== "online" && status !== "offline") {
       return Response.json(
         { error: "Invalid status" },
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // 3. Update driver status in DB
+    // Update driver status in DB
     await db.query(
       "UPDATE driver SET status = ? WHERE id = ?",
       [status, driverId]
