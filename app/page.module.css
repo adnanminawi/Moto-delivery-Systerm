@@ -1,0 +1,129 @@
+.page {
+  min-height: 100vh;
+  background: #f2f2f2;
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+/* HEADER (matches Driver page) */
+.header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.3px;
+  background: #ffffff;
+  border-bottom: 3px solid #f4c542;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 50px;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  max-width: 620px;
+}
+
+.title {
+  font-size: 56px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+
+.brandAccent {
+  color: #f4c542;
+}
+
+.tagline {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ROLE CARDS */
+.roles {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 900px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  border-radius: 14px;
+  padding: 28px 24px;
+  width: 260px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-color: #f4c542;
+}
+
+.icon {
+  font-size: 40px;
+  margin-bottom: 14px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.cardDesc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.enter {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  background: #f4c542;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.card:hover .enter {
+  background: #e6b93c;
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .title {
+    font-size: 40px;
+  }
+  .card {
+    width: 100%;
+    max-width: 320px;
+  }
+}

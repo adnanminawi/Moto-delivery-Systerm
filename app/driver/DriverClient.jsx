@@ -1,7 +1,7 @@
 "use client";
-
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import Map from "@/components/DriverMap";
+const Map = dynamic(() => import("@/components/CustomerMap"), { ssr: false });
 import styles from "./page.module.css";
 import GPSStream from "@/components/GPSStream";
 import RidePopup from "@/components/RidePopup";
