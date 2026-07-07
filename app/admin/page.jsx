@@ -1,0 +1,179 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+
+const LiveMap = dynamic(() => import("@/components/admin/Map"), {
+  ssr: false,
+});
+
+import {
+  Users,
+  UserRound,
+  CarTaxiFront,
+  CheckCircle,
+  Clock,
+  XCircle,
+} from "lucide-react";
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+export default function AdminDashboard() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/admin");
+        const json = await res.json();
+        setData(json);
+      } catch (err) {
+        console.error("Error fetching admin data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="p-6 text-gray-500">Loading dashboard...</div>;
+  }
+
+  const stats = [
+    {
+      title: "Total Drivers",
+      value: data?.total_drivers || 0,
+      icon: <CarTaxiFront />,
+    },
+    {
+      title: "Total Customers",
+      value: data?.total_customers || 0,
+      icon: <Users />,
+    },
+    {
+      title: "Total Rides",
+      value: data?.total_rides || 0,
+      icon: <UserRound />,
+    },
+    {
+      title: "Completed",
+      value: data?.completed_rides || 0,
+      icon: <CheckCircle />,
+    },
+    {
+      title: "Pending",
+      value: data?.pending_rides || 0,
+      icon: <Clock />,
+    },
+    {
+      title: "Cancelled",
+      value: data?.cancelled_rides || 0,
+      icon: <XCircle />,
+    },
+  ];
+
+  const chartData = {
+    labels: ["Completed", "Pending", "Cancelled"],
+    datasets: [
+      {
+        label: "Rides Status",
+        data: [
+          data?.completed_rides || 0,
+          data?.pending_rides || 0,
+          data?.cancelled_rides || 0,
+        ],
+        backgroundColor: ["#22c55e", "#f59e0b", "#ef4444"],
+      },
+    ],
+  };
+
+  return (
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+
+      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+
+      {/* 🟢 TOP SECTION: MAP + STATS */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        {/* 🗺️ LIVE MAP (SMALL) */}
+        <div className="bg-white p-3 rounded-xl shadow h-[320px]">
+          <h2 className="font-semibold mb-2 text-sm">Live Drivers Map</h2>
+
+          <div className="h-[260px] w-full rounded-lg overflow-hidden">
+            <LiveMap />
+          </div>
+        </div>
+
+        {/* 📊 STATS */}
+        <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-3">
+          {stats.map((item, idx) => (
+            <div
+              key={idx}
+              className="bg-white shadow rounded-xl p-3 flex items-center justify-between"
+            >
+              <div>
+                <p className="text-gray-500 text-xs">{item.title}</p>
+                <h2 className="text-lg font-bold">{item.value}</h2>
+              </div>
+              <div className="text-blue-500 text-sm">{item.icon}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 📊 CHART */}
+      <div className="bg-white p-4 rounded-xl shadow">
+        <h2 className="font-semibold mb-4">Rides Overview</h2>
+        <Bar data={chartData} />
+      </div>
+
+      {/* 📋 TABLE */}
+      <div className="bg-white p-4 rounded-xl shadow">
+        <h2 className="font-semibold mb-4">Recent Customers</h2>
+
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="border-b">
+              <th className="py-2">Name</th>
+              <th>Phone</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {data?.recent_customers?.map((c) => (
+              <tr key={c.id} className="border-b">
+                <td className="py-2">{c.name}</td>
+                <td>{c.phone}</td>
+                <td>{c.created_at}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  );
+}
