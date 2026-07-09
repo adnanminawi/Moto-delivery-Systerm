@@ -15,7 +15,6 @@ export default function DriversPage() {
 
         console.log("API DATA:", data);
 
-        // ✅ حماية كاملة
         setDrivers(Array.isArray(data?.drivers) ? data.drivers : []);
 
       } catch (err) {
@@ -51,7 +50,7 @@ export default function DriversPage() {
 
         <Link
           href="/admin/drivers/create"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-yellow-500 text-white px-4 py-2 rounded"
         >
           + Add Driver
         </Link>
@@ -90,7 +89,7 @@ export default function DriversPage() {
                   <td className="p-3 flex gap-2">
 
                   <Link
-  href={`/admin/drivers/${driver.id}`}
+  href={`/admin/dashboard/drivers/${driver.id}`}
   className="px-3 py-1 bg-green-500 text-white rounded"
 >
   View
