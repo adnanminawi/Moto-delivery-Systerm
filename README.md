@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+MotoTaxi 
 
-## Getting Started
+A real-time motorcycle-taxi booking platform, Connecting customers to the nearest available driver in seconds, replacing a manual WhatsApp-based dispatch workflow.
 
-First, run the development server:
+Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Customer:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Book a ride with just a name and phone number — no account required.
+Set pickup and destination on an interactive map.
+Live tracking of the assigned driver's position.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Driver
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Log in with phone + password.
+Go online/offline and stream live GPS location.
+Receive ride requests with a 15-second accept/reject window.
 
-## Learn More
+Admin
 
-To learn more about Next.js, take a look at the following resources:
+Live map of all drivers (online, busy, offline).
+Driver management: create drivers, view status.
+Daily orders and basic operational stats.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+How ride assignment works:
+1.Customer submits a booking, ride enters searching state.
+2.The server computes the Haversine distance from the pickup point to every online driver and targets the nearest one.
+3.The driver gets the request with a 15s timeout, on reject/timeout the next nearest driver is assgined.
+4.On accept, the ride moves through assigned to en_route to completed (or cancelled / no_driver_found).
