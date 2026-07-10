@@ -7,7 +7,6 @@ export default function CreateDriver() {
     name: "",
     phone: "",
     password: "",
-    status: "available",
   });
 
   const handleChange = (e) => {
@@ -21,30 +20,21 @@ export default function CreateDriver() {
     e.preventDefault();
 
     try {
-      const res = await fetch("/api/admin/drivers/create", {
+      const res = await fetch("/api/drivers", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(driver),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message);
+        alert(data.error || "Failed to create driver");
         return;
       }
 
-      alert(data.message);
-
-      setDriver({
-        name: "",
-        phone: "",
-        password: "",
-        status: "available",
-      });
-
+      alert("Driver added successfully.");
+      setDriver({ name: "", phone: "", password: "" });
     } catch (error) {
       console.error(error);
       alert("Something went wrong.");
@@ -52,23 +42,24 @@ export default function CreateDriver() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-
-        <h1 className="text-3xl font-bold mb-6 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="bg-white border border-gray-200 shadow-lg rounded-xl p-6 w-full max-w-sm">
+        <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
           Add Driver
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <p className="text-center text-gray-500 text-sm mb-5">
+          Create new driver account
+        </p>
 
+        <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="text"
             name="name"
             placeholder="Driver Name"
             value={driver.name}
             onChange={handleChange}
-            className="w-full border rounded-lg p-3"
+            className="w-full border border-gray-300 rounded-lg p-2.5 text-sm outline-none focus:border-blue-500"
           />
 
           <input
@@ -77,7 +68,7 @@ export default function CreateDriver() {
             placeholder="Phone Number"
             value={driver.phone}
             onChange={handleChange}
-            className="w-full border rounded-lg p-3"
+            className="w-full border border-gray-300 rounded-lg p-2.5 text-sm outline-none focus:border-blue-500"
           />
 
           <input
@@ -86,31 +77,17 @@ export default function CreateDriver() {
             placeholder="Password"
             value={driver.password}
             onChange={handleChange}
-            className="w-full border rounded-lg p-3"
+            className="w-full border border-gray-300 rounded-lg p-2.5 text-sm outline-none focus:border-blue-500"
           />
-
-          <select
-            name="status"
-            value={driver.status}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option value="available">Available</option>
-            <option value="busy">Busy</option>
-            <option value="offline">Offline</option>
-          </select>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-lg text-sm transition"
           >
             Add Driver
           </button>
-
         </form>
-
       </div>
-
     </div>
   );
 }

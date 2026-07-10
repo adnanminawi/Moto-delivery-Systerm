@@ -23,7 +23,7 @@ export default function DriverRidesPage() {
     switch (status) {
       case "completed":
         return "bg-green-100 text-green-700";
-      case "pending":
+      case "searching":
         return "bg-yellow-100 text-yellow-700";
       case "assigned":
         return "bg-blue-100 text-blue-700";

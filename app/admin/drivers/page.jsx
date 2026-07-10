@@ -12,12 +12,7 @@ export default function DriversPage() {
       try {
         const res = await fetch("/api/drivers");
         const data = await res.json();
-
-        console.log("API DATA:", data);
-
-        // ✅ حماية كاملة
         setDrivers(Array.isArray(data?.drivers) ? data.drivers : []);
-
       } catch (err) {
         console.log("Error fetching drivers:", err);
         setDrivers([]);
@@ -25,7 +20,6 @@ export default function DriversPage() {
         setLoading(false);
       }
     };
-
     fetchDrivers();
   }, []);
 
@@ -34,7 +28,7 @@ export default function DriversPage() {
       case "online":
         return "text-green-600";
       case "busy":
-        return "text-yellow-500";
+        return "text-amber-500";
       case "offline":
         return "text-red-500";
       default:
@@ -43,76 +37,57 @@ export default function DriversPage() {
   };
 
   return (
-    <div className="p-6">
-
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50 p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Drivers Management</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Drivers Management</h1>
 
         <Link
           href="/admin/drivers/create"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
         >
           + Add Driver
         </Link>
       </div>
 
-      {/* Loading */}
       {loading ? (
-        <p>Loading drivers...</p>
+        <p className="text-gray-500">Loading drivers...</p>
       ) : (
-        <div className="bg-white shadow rounded overflow-hidden">
-
+        <div className="bg-white shadow-md rounded-xl overflow-hidden border border-gray-200">
           <table className="w-full">
-
             <thead className="bg-gray-100 text-left">
               <tr>
-                <th className="p-3">Name</th>
-                <th className="p-3">Phone</th>
-        
-                <th className="p-3">Status</th>
-                <th className="p-3">Actions</th>
+                <th className="p-3 text-gray-800 font-semibold">Name</th>
+                <th className="p-3 text-gray-800 font-semibold">Phone</th>
+                <th className="p-3 text-gray-800 font-semibold">Status</th>
+                <th className="p-3 text-gray-800 font-semibold">Actions</th>
               </tr>
             </thead>
 
             <tbody>
               {(drivers || []).map((driver) => (
-                <tr key={driver.id} className="border-t">
-
-                  <td className="p-3">{driver.name}</td>
-                  <td className="p-3">{driver.phone}</td>
-                 
-
+                <tr key={driver.id} className="border-t hover:bg-gray-50 transition">
+                  <td className="p-3 text-gray-700">{driver.name}</td>
+                  <td className="p-3 text-gray-700">{driver.phone}</td>
                   <td className={`p-3 font-semibold ${getStatusColor(driver.status)}`}>
                     {driver.status}
                   </td>
-
                   <td className="p-3 flex gap-2">
-
-                  <Link
-  href={`/admin/drivers/${driver.id}`}
-  className="px-3 py-1 bg-green-500 text-white rounded"
->
-  View
-</Link>
-
-                   
-
-                    <button className="px-3 py-1 bg-red-500 text-white rounded">
+                    <Link
+                      href={`/admin/drivers/${driver.id}`}
+                      className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition"
+                    >
+                      View
+                    </Link>
+                    <button className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg transition">
                       Delete
                     </button>
-
                   </td>
-
                 </tr>
               ))}
             </tbody>
-
           </table>
-
         </div>
       )}
-
     </div>
   );
 }
