@@ -154,5 +154,8 @@ export default function DriverClient() {
         <Map rideRequest={rideRequest} />
       </div>
     </div>
+
+
   );
+ 
 }

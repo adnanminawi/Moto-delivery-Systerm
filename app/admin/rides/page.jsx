@@ -12,8 +12,6 @@ export default function RidesPage() {
         const res = await fetch("/api/ride");
         const data = await res.json();
 
-        console.log("RIDES API:", data);
-
         setRides(data?.rides_info ?? []);
       } catch (err) {
         console.log("Error fetching rides:", err);

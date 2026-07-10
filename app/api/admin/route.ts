@@ -33,6 +33,18 @@ export async function GET() {
       "SELECT COUNT(*) AS total FROM ride WHERE status = 'cancelled'"
     );
 
+    
+    const [online] = await db.query<RowDataPacket[]>(
+      "SELECT COUNT(*) AS total from driver WHERE status = 'online'"
+    );
+    const [offline] = await db.query<RowDataPacket[]>(
+      "SELECT COUNT(*) as total from driver WHERE status= 'offline'"
+    );
+    const [busy] = await db.query<RowDataPacket[]>(
+      "SELECT COUNT(*) as total FROM driver WHERE status = 'busy'"
+    );
+
+  
     // recent customers
     const [recentCustomers] = await db.query<RowDataPacket[]>(
       `SELECT id, name, phone, created_at
@@ -48,7 +60,11 @@ export async function GET() {
       completed_rides: completed[0].total,
       pending_rides: pending[0].total,
       cancelled_rides: cancelled[0].total,
+      online: online[0].total,
+      busy: busy[0].total,
+      offline: offline[0].total,
       recent_customers: recentCustomers,
+
     });
   } catch (error) {
     return Response.json({ error: String(error) }, { status: 500 });

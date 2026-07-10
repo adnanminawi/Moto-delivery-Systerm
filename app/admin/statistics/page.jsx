@@ -6,44 +6,31 @@ import RideChart from "@/components/admin/RideChart";
 import DriverChart from "@/components/admin/DriverChart";
 
 export default function StatisticsPage() {
-  const [stats, setStats] = useState({
-    drivers: 0,
-    customers: 0,
-    rides: 0,
-
-    // 🚦 RIDE STATUS (STANDARDIZED)
-    completed: 0,
-    pending: 0,
-    cancelled: 0,
-
-    // 🚗 DRIVER STATUS
-    online: 0,
-    busy: 0,
-    offline: 0,
-  });
-
+  const [stats, setStats] = useState({});
   useEffect(() => {
     loadStats();
   }, []);
 
   async function loadStats() {
     try {
-      const res = await fetch("/api/admin/statistics");
+      const res = await fetch("/api/admin");
       const data = await res.json();
 
       setStats({
-        drivers: data.drivers || 0,
-        customers: data.customers || 0,
-        rides: data.rides || 0,
+        drivers: data.total_drivers || 0,
+        customers: data.total_customers || 0,
+        rides: data.total_rides || 0,
 
         // normalize old + new statuses
-        completed: data.completed || 0,
-        pending: data.pending || 0,
-        cancelled: data.cancelled || 0,
+        completed: data.completed_rides || 0,
+        pending: data.pending_rides || 0,
+        cancelled: data.cancelled_rides || 0,
 
         online: data.online || 0,
-        busy: data.busy || 0,
-        offline: data.offline || 0,
+        offline: data.offline||0,
+        bust: data.busy||0,
+
+
       });
     } catch (err) {
       console.log("Error loading stats:", err);
