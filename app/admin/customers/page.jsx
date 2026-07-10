@@ -1,184 +1,125 @@
 "use client";
+import { use, useEffect, useState } from "react";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-
-export default function CustomersPage() {
-  const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function CustomerProfile({ params }) {
+  const { id } = use(params);
+  const [customer, setCustomer] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const fetchCustomers = async () => {
+    async function getCustomer() {
       try {
-        const res = await fetch("/api/customer");
+        const res = await fetch(`/api/customer/${id}`);
         const data = await res.json();
-
-        console.log(data);
-
-        if (!res.ok) {
-          throw new Error(data.error || "Failed");
-        }
-
-        setCustomers(data.customers);
-
+        const profile = data.Customer_Profile[0];
+        setCustomer(profile);
+        setName(profile.name);
+        setPhone(profile.phone);
       } catch (error) {
         console.log(error);
-
-      } finally {
-        setLoading(false);
       }
-    };
+    }
+    getCustomer();
+  }, [id]);
 
-    fetchCustomers();
-  }, []);
+  async function handleSave() {
+    const res = await fetch(`/api/customer/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, phone }),
+    });
 
+    if (res.ok) {
+      setCustomer({ ...customer, name, phone });
+      setIsEditing(false);
+      setMessage("Customer updated successfully");
+    } else {
+      setMessage("Failed to update customer");
+    }
+  }
+
+  function handleCancel() {
+    setIsEditing(false);
+    setName(customer.name);
+    setPhone(customer.phone);
+  }
+
+  if (!customer) return <p className="p-6 text-gray-500">Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-white p-6">
-
-
-      <div className="mb-6">
-
-        <h1 className="text-3xl font-bold text-gray-900">
-          Customers
-        </h1>
-
-        <p className="text-gray-500 text-sm mt-1">
-          Manage all registered customers
-        </p>
-
-      </div>
-
-
-
-      {loading ? (
-
-        <p className="text-gray-500">
-          Loading...
-        </p>
-
-      ) : (
-
-
-        <div className="
-          bg-white
-          border
-          border-yellow-300
-          shadow-md
-          rounded-xl
-          p-5
-          overflow-x-auto
-        ">
-
-
-          <table className="w-full bg-white">
-
-
-            <thead>
-
-              <tr className="border-b">
-
-
-                <th className="
-                  p-3
-                  text-left
-                  text-gray-800
-                  font-semibold
-                ">
-                  Name
-                </th>
-
-
-                <th className="
-                  p-3
-                  text-left
-                  text-gray-800
-                  font-semibold
-                ">
-                  Phone
-                </th>
-
-
-                <th className="
-                  p-3
-                  text-left
-                  text-gray-800
-                  font-semibold
-                ">
-                  Action
-                </th>
-
-
-              </tr>
-
-            </thead>
-
-
-
-            <tbody className="bg-white">
-
-
-              {customers.map((c) => (
-
-                <tr
-                  key={c.id}
-                  className="
-                    border-b
-                    bg-white
-                    hover:bg-gray-50
-                    transition
-                  "
-                >
-
-
-                  <td className="p-3 text-gray-700">
-                    {c.name}
-                  </td>
-
-
-                  <td className="p-3 text-gray-700">
-                    {c.phone}
-                  </td>
-
-
-                  <td className="p-3">
-
-                    <Link
-                      href={`/admin/dashboard/customer/${c.id}`}
-                      className="
-                        bg-yellow-400
-                        hover:bg-yellow-500
-                        text-black
-                        font-semibold
-                        px-4
-                        py-2
-                        rounded-lg
-                        text-sm
-                        transition
-                      "
-                    >
-                      View
-                    </Link>
-
-                  </td>
-
-
-                </tr>
-
-              ))}
-
-
-            </tbody>
-
-
-          </table>
-
-
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-8">
+        <div className="flex flex-col items-center">
+          <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-3xl font-bold text-white shadow-md">
+            {name?.charAt(0).toUpperCase()}
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mt-4">{customer.name}</h1>
+          <p className="text-gray-500 text-sm mt-1">Customer Profile</p>
         </div>
 
-      )}
+        {message && (
+          <p className="mt-4 p-3 rounded-lg bg-blue-100 text-blue-800 text-center font-semibold">
+            {message}
+          </p>
+        )}
 
+        <div className="mt-8 space-y-4">
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <label className="text-xs text-gray-500">Full Name</label>
+            {isEditing ? (
+              <input
+                className="mt-2 w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 outline-none focus:border-blue-500"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            ) : (
+              <p className="mt-2 text-base font-semibold text-gray-900">{customer.name}</p>
+            )}
+          </div>
 
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <label className="text-xs text-gray-500">Phone Number</label>
+            {isEditing ? (
+              <input
+                className="mt-2 w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 outline-none focus:border-blue-500"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            ) : (
+              <p className="mt-2 text-base font-semibold text-gray-900">{customer.phone}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-3">
+          {isEditing ? (
+            <>
+              <button
+                className="flex-1 py-3 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+              <button
+                className="flex-1 py-3 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 transition"
+                onClick={handleSave}
+              >
+                Save Changes
+              </button>
+            </>
+          ) : (
+            <button
+              className="flex-1 py-3 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 transition"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
