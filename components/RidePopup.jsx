@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export default function RidePopup({ setRideRequest }) {
+export default function RidePopup({ setRideRequest, driverId  }) {
   useEffect(() => {
     let lastRideId = null;
     let timeoutId = null;
@@ -16,7 +16,7 @@ export default function RidePopup({ setRideRequest }) {
         const data = await res.json();
 
         const ride = data.rides_info?.find(
-          (r) => r.status === "searching"
+          (r) => r.status === "searching" && r.driver_id == driverId
         );
 
         if (ride && ride.id !== lastRideId) {
@@ -62,7 +62,7 @@ export default function RidePopup({ setRideRequest }) {
         clearTimeout(timeoutId);
       }
     };
-  }, [setRideRequest]);
+  }, [setRideRequest, driverId]);
 
   return null;
 }
