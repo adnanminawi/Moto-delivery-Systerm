@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-const Map = dynamic(() => import("@/components/CustomerMap"), { ssr: false });
+const Map = dynamic(() => import("@/components/DriverMap"), { ssr: false });
 import styles from "./page.module.css";
 import GPSStream from "@/components/GPSStream";
 import RidePopup from "@/components/RidePopup";
@@ -133,7 +133,7 @@ async function acceptRide() {
         <GPSStream driverId={driver?.id} isActive={isOnline} />
 
    {isOnline && !activeRide && (
-  <RidePopup setRideRequest={setRideRequest} />
+  <RidePopup setRideRequest={setRideRequest} driverId={driver?.id} />
 )}
 
         <div className={styles.card}>

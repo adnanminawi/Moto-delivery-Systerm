@@ -3,7 +3,7 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, useMapEvents, Marker    } from "react-leaflet";
 import { useEffect, useState } from "react";
 import L from "leaflet";
-import RouteToPickup from "./RouteToPickup";
+
 
 // there is error in the Marker its not showing the marker icon so this will fix it
 const icon = L.icon({
@@ -28,13 +28,7 @@ const icon = L.icon({
   return null;
 }  
 
-export default function CustomerMap({ driverLocation, pickup, destination, setPickup, setDestination }) {
-    
-    
-
- 
-
-  
+export default function CustomerMap({ pickup, destination, setPickup, setDestination }) {  
     return(
 
         <div>
@@ -44,10 +38,6 @@ export default function CustomerMap({ driverLocation, pickup, destination, setPi
             {pickup && <Marker position={pickup} icon={icon} />}
             {destination && <Marker position={destination} icon={icon} />}
 
-               <RouteToPickup
-      driverLocation={driverLocation}
-      pickup={pickup}
-    />
             </MapContainer>
         </div>
     )
