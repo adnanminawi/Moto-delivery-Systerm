@@ -7,13 +7,16 @@ import GPSStream from "@/components/GPSStream";
 import RidePopup from "@/components/RidePopup";
 
 export default function DriverClient() {
-  // ✅ FIX: start with null (important for real popup flow)
+  
   const [rideRequest, setRideRequest] = useState(null);
 
   const [driver, setDriver] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
+  const [activeRide, setActiveRide] = useState(null);
 
-  // ✅ Fetch driver with ID = 1
+  const [pickup, setPickup] = useState(null);
+const [destination, setDestination] = useState(null);
+
   useEffect(() => {
     async function fetchDriver() {
       try {
@@ -71,17 +74,48 @@ export default function DriverClient() {
     }
   }
 
-  function acceptRide() {
-    console.log("Ride accepted");
-    setRideRequest(null);
+async function acceptRide() {
+  console.log("Ride accepted");
+
+  try {
+    const res = await fetch("/api/drivers/ride", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "accept",
+        rideId: rideRequest.id,
+        driverId: driver.id,
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log(data);
+
+    if (res.ok) {
+  setActiveRide(rideRequest);
+
+  setPickup({
+    lat: rideRequest.pickup.lat,
+    lng: rideRequest.pickup.lng,
+  });
+
+  setRideRequest(null);
+}
+
+  } catch (err) {
+    console.error("Failed to accept ride:", err);
   }
+}
 
   function rejectRide() {
     console.log("Ride rejected");
     setRideRequest(null);
   }
 
-  // ✅ Auto reject ride after 30 sec
+
   useEffect(() => {
     if (!rideRequest) return;
 
@@ -98,18 +132,17 @@ export default function DriverClient() {
       <div className={styles.leftPanel}>
         <GPSStream driverId={driver?.id} isActive={isOnline} />
 
-        {isOnline && (
+   {isOnline && !activeRide && (
   <RidePopup setRideRequest={setRideRequest} />
 )}
 
-        {/* DRIVER INFO */}
         <div className={styles.card}>
           <h3>Driver Info</h3>
           <p>Name: {driver?.name || "Loading..."}</p>
           <p>Phone: {driver?.phone || "Loading..."}</p>
         </div>
 
-        {/* STATUS */}
+   
         <div className={styles.card}>
           <h3>Status</h3>
 
@@ -118,40 +151,100 @@ export default function DriverClient() {
           </button>
         </div>
 
-        {/* TOTAL RIDES */}
         <div className={styles.card}>
           <h3>Total Rides</h3>
           <h2>13</h2>
         </div>
       </div>
 
-      {/* MAP SECTION */}
+
       <div className={styles.map}>
-        {rideRequest && (
-          <div className={styles.popup}>
-            <h3>🚨 New Ride Request</h3>
 
-<p>
-  Pickup: {rideRequest.pickup.address}
-</p>
+      {rideRequest && (
+    <div className={styles.popup}>
+      <h3>🚨 New Ride Request</h3>
 
-<p>
-  Destination: {rideRequest.destination.address}
-</p>
+      <p>
+        Pickup: {rideRequest.pickup.address}
+      </p>
 
-            <div className={styles.popupButtons}>
-              <button className={styles.accept} onClick={acceptRide}>
-                Accept
-              </button>
+      <p>
+        Destination: {rideRequest.destination.address}
+      </p>
 
-              <button className={styles.reject} onClick={rejectRide}>
-                Reject
-              </button>
-            </div>
-          </div>
-        )}
+      <div className={styles.popupButtons}>
+        <button
+          className={styles.accept}
+          onClick={acceptRide}
+        >
+          Accept
+        </button>
 
-        <Map rideRequest={rideRequest} />
+        <button
+          className={styles.reject}
+          onClick={rejectRide}
+        >
+          Reject
+        </button>
+      </div>
+    </div>
+  )}
+
+     {activeRide && (
+  <div className="fixed top-5 left-1/2 z-[9999] -translate-x-1/2 rounded-xl bg-white p-4 shadow-lg">
+    <h3 className="font-bold">
+      Current Ride
+    </h3>
+
+    <p>
+      Pickup: {activeRide.pickup.address}
+    </p>
+
+    <p>
+      Destination: {activeRide.destination.address}
+    </p>
+
+    <div className="mt-4 flex justify-center">
+      <button
+        className="rounded-lg bg-yellow-400 px-4 py-2 font-semibold text-black"
+        onClick={async () => {
+          const res = await fetch("/api/drivers/ride", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              action: "complete",
+              rideId: activeRide.id,
+            }),
+          });
+
+          const data = await res.json();
+
+          console.log(data);
+
+          if (res.ok) {
+            setActiveRide(null);
+          }
+        }}
+      >
+        Complete Ride
+      </button>
+    </div>
+  </div>
+)}
+
+<Map
+  rideRequest={activeRide || rideRequest}
+  driverLocation={{
+    lat: driver?.current_lat,
+    lng: driver?.current_lng,
+  }}
+  pickup={pickup}
+  setPickup={setPickup}
+  destination={destination}
+  setDestination={setDestination}
+/>
       </div>
     </div>
 
