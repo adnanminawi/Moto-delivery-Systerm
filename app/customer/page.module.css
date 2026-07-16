@@ -1,0 +1,85 @@
+.container {
+  display: flex;
+  height: 100vh;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  color: #222;
+}
+
+.leftPanel {
+  width: 320px;
+  background: #ffffff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-right: 1px solid #ddd;
+}
+
+.card {
+  background: #f7f7f7;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #e3e3e3;
+}
+
+.card h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #333;
+  margin: 4px 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.button {
+  width: 100%;
+  padding: 10px;
+  background: #f4c542;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  color: #000;
+  transition: 0.2s ease;
+}
+
+.button:hover {
+  background: #e6b93c;
+}
+
+.resetButton {
+  width: 100%;
+  padding: 10px;
+  background: #e0e0e0;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  color: #000;
+}
+
+.map {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #dcdcdc;
+}
