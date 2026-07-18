@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 export default function RidesPage() {
+   const router = useRouter();
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -89,6 +90,7 @@ export default function RidesPage() {
                 <th className="p-4">Pickup</th>
                 <th className="p-4">Destination</th>
                 <th className="p-4">Status</th>
+                <th className="p-4">Assign Driver</th>
               </tr>
             </thead>
 
@@ -122,7 +124,14 @@ export default function RidesPage() {
                       {getStatusLabel(ride.status)}
                     </span>
                   </td>
+                  
+                  <td className="p-4">
+                    <button onClick={() =>router.push(`/admin/rides/${ride.id}/assign`)}
+                      className="px-4 py-2 text-sm font-semibold text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 transition">
+                      Assign Driver
+                    </button>
 
+                  </td>
                 </tr>
               ))}
             </tbody>
