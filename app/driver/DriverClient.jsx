@@ -13,6 +13,7 @@ export default function DriverClient() {
   const [driver, setDriver] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
   const [activeRide, setActiveRide] = useState(null);
+  const [totalRides, setTotalRides] = useState(0);
 
   const [pickup, setPickup] = useState(null);
 const [destination, setDestination] = useState(null);
@@ -20,7 +21,13 @@ const [destination, setDestination] = useState(null);
   useEffect(() => {
     async function fetchDriver() {
       try {
-        const res = await fetch("/api/drivers/1");
+        const savedDriver = JSON.parse(
+  localStorage.getItem("driver")
+);
+
+if (!savedDriver) return;
+
+const res = await fetch(`/api/drivers/${savedDriver.id}`);
 
         if (!res.ok) return;
 
@@ -29,6 +36,7 @@ const [destination, setDestination] = useState(null);
 
         setDriver(d);
         setIsOnline(d?.status === "online");
+        setTotalRides(data.totalRides || 0);
       } catch (err) {
         console.error("Failed to fetch driver:", err);
       }
@@ -151,26 +159,34 @@ async function acceptRide() {
           </button>
         </div>
 
-        <div className={styles.card}>
-          <h3>Total Rides</h3>
-          <h2>13</h2>
-        </div>
+       <div className={styles.card}>
+  <h3>Total Rides</h3>
+  <h2>{totalRides}</h2>
+</div>
       </div>
 
 
       <div className={styles.map}>
 
-      {rideRequest && (
-    <div className={styles.popup}>
-      <h3>🚨 New Ride Request</h3>
+{rideRequest && (
+  <div className={styles.popup}>
+    <h3>🚨 New Ride Request</h3>
 
-      <p>
-        Pickup: {rideRequest.pickup.address}
-      </p>
+    <p>
+      Customer: {rideRequest.customer?.name}
+    </p>
 
-      <p>
-        Destination: {rideRequest.destination.address}
-      </p>
+    <p>
+      Phone: {rideRequest.customer?.phone}
+    </p>
+
+    <p>
+      Pickup: {rideRequest.pickup.address}
+    </p>
+
+    <p>
+      Destination: {rideRequest.destination.address}
+    </p>
 
       <div className={styles.popupButtons}>
         <button

@@ -25,6 +25,11 @@ export default function RidePopup({ setRideRequest, driverId  }) {
           setRideRequest({
   id: ride.id,
 
+    customer: {
+    name: ride.customer_name,
+    phone: ride.customer_phone,
+  },
+
   pickup: {
     lat: ride.pickup_lat,
     lng: ride.pickup_lng,

@@ -3,11 +3,16 @@ import db from "@/lib/db";
 export async function GET() {
   try {
    const [rides] = await db.query(
-  `SELECT *
-   FROM ride
-   WHERE status = 'searching'
-   ORDER BY id DESC
-   LIMIT 1`
+  `SELECT
+    ride.*,
+    customer.name AS customer_name,
+    customer.phone AS customer_phone
+FROM ride
+JOIN customer
+    ON ride.customer_id = customer.id
+WHERE ride.status = 'searching'
+ORDER BY ride.id DESC
+LIMIT 1`
 );
 
     return Response.json({
