@@ -22,7 +22,7 @@ const [destination, setDestination] = useState(null);
     async function fetchDriver() {
       try {
         const savedDriver = JSON.parse(
-  localStorage.getItem("driver")
+  sessionStorage.getItem("driver")
 );
 
 if (!savedDriver) return;
@@ -118,12 +118,41 @@ async function acceptRide() {
   }
 }
 
-  function rejectRide() {
-    console.log("Ride rejected");
-    setRideRequest(null);
+  async function rejectRide() {
+    await fetch("/api/drivers/ride", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "reject",
+        rideId: rideRequest.id,
+        driverId: driver.id,}),
+    });
+  setRideRequest(null)
   }
+async function completeRide() {
+  try {
+    const res = await fetch("/api/drivers/ride", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "complete",
+        rideId: activeRide.id,
+        driverId: driver.id,
+      }),
+    });
 
+    const data = await res.json();
+    console.log(data);
 
+    if (res.ok) {
+      setActiveRide(null);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
   useEffect(() => {
     if (!rideRequest) return;
 
@@ -221,31 +250,7 @@ async function acceptRide() {
     </p>
 
     <div className="mt-4 flex justify-center">
-      <button
-        className="rounded-lg bg-yellow-400 px-4 py-2 font-semibold text-black"
-        onClick={async () => {
-          const res = await fetch("/api/drivers/ride", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              action: "complete",
-              rideId: activeRide.id,
-            }),
-          });
-
-          const data = await res.json();
-
-          console.log(data);
-
-          if (res.ok) {
-            setActiveRide(null);
-          }
-        }}
-      >
-        Complete Ride
-      </button>
+      <button onClick={completeRide}>Complete Ride</button>
     </div>
   </div>
 )}

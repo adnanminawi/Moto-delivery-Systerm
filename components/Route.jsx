@@ -3,42 +3,43 @@
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
-L.Icon.Default.mergeOptions({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
 import "leaflet-routing-machine";
 
-export default function RouteToPickup({ driverLocation, pickup }) {
+export default function RouteToPickup({pickup,driverLocation }) {
   const map = useMap();
 
   useEffect(() => {
-    if (
+    if ( 
       !driverLocation ||
       !driverLocation.lat ||
       !driverLocation.lng ||
       !pickup
-    ) {
+      ) 
+    {
       return;
     }
 
     const routingControl = L.Routing.control({
       waypoints: [
-        L.latLng(driverLocation.lat, driverLocation.lng),
         L.latLng(pickup.lat, pickup.lng),
+        L.latLng(driverLocation.lat, driverLocation.lng),
       ],
       routeWhileDragging: false,
       addWaypoints: false,
       draggableWaypoints: false,
       fitSelectedRoutes: true,
       show: false,
+      createMarker: () => null,
     }).addTo(map);
 
-    return () => {
-      map.removeControl(routingControl);
+  return () => {
+      if (map && routingControl) {
+        try {
+          map.removeControl(routingControl);
+        } catch (e) {
+          // ignore async cleanup race
+        }
+      }
     };
   }, [map, driverLocation, pickup]);
-
-  return null;
-}
+return null;}
