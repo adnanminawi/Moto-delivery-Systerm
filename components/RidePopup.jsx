@@ -22,37 +22,42 @@ export default function RidePopup({ setRideRequest, driverId  }) {
         if (ride && ride.id !== lastRideId) {
           lastRideId = ride.id;
 
-          setRideRequest({
-  id: ride.id,
-
+        setRideRequest({
+    id: ride.id,
     customer: {
     name: ride.customer_name,
-    phone: ride.customer_phone,
-  },
+    phone: ride.customer_phone, 
+    },
 
-  pickup: {
+    pickup: {
     lat: ride.pickup_lat,
     lng: ride.pickup_lng,
     address: ride.pickup_address,
   },
 
-  destination: {
+    destination: {
     lat: ride.destination_lat,
     lng: ride.destination_lng,
     address: ride.destination_address,
   },
 });
 
-          if (timeoutId) clearTimeout(timeoutId);
+  if (timeoutId) clearTimeout(timeoutId);
 
-          timeoutId = setTimeout(() => {
-            setRideRequest(null);
-          }, 30000);
-        }
-      } catch (err) {
-        console.error("RidePopup error:", err);
-      }
-    }
+
+  timeoutId = setTimeout(async () => {
+  await fetch("/api/drivers/ride", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "reject", rideId: ride.id, driverId }),
+  });
+  setRideRequest(null);
+  }, 30000);
+  }
+  }catch (err) {
+  console.error("RidePopup error:", err);
+  }
+  }
 
     // Check immediately when page loads
     checkRide();

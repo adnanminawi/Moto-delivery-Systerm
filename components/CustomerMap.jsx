@@ -3,11 +3,17 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, useMapEvents, Marker    } from "react-leaflet";
 import { useEffect, useState } from "react";
 import L from "leaflet";
-
+import Route from "./Route";
 
 // there is error in the Marker its not showing the marker icon so this will fix it
 const icon = L.icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [20, 35],
+  iconAnchor: [7, 25],
+});
+const driverIcon = L.icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
   iconSize: [20, 35],
   iconAnchor: [7, 25],
@@ -28,7 +34,7 @@ const icon = L.icon({
   return null;
 }  
 
-export default function CustomerMap({ pickup, destination, setPickup, setDestination }) {  
+export default function CustomerMap({ driverLocation,pickup, destination, setPickup, setDestination }) {  
     return(
 
         <div>
@@ -37,6 +43,10 @@ export default function CustomerMap({ pickup, destination, setPickup, setDestina
             <ClickHandler pickup={pickup} destination={destination} setPickup={setPickup} setDestination={setDestination}/>
             {pickup && <Marker position={pickup} icon={icon} />}
             {destination && <Marker position={destination} icon={icon} />}
+            {pickup && driverLocation && <Route pickup={pickup} driverLocation={driverLocation} />}
+            {driverLocation && (
+            <Marker position={[(driverLocation.lat), Number(driverLocation.lng)]} icon={driverIcon} />
+            )}
 
             </MapContainer>
         </div>

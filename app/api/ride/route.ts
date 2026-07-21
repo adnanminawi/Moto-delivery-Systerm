@@ -59,4 +59,5 @@ const destination_address = await getAddress(destination_lat, destination_lng);
   } catch (error) {
     return Response.json({ error: String(error) }, { status: 500 });
   }
+
 }

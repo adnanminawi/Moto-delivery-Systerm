@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import axios from "axios";
 
@@ -11,9 +11,26 @@ export default function Page() {
   const [phone, setPhone] = useState("");
   const [pickup, setPickup] = useState<{ lat: number; lng: number } | null>(null);
   const [destination, setDestination] = useState<{ lat: number; lng: number } | null>(null);
-  console.log("pickup:", pickup, "destination:", destination);
+  const [rideId, setRideId] = useState();
+  const [driverLocation, setDriverLocation] = useState<{ current_lat: number; current_lng: number } | null>(null);
+  const [noDriver, setNoDriver] = useState(false);
+ console.log("pickup:", pickup, "destination:", destination);
+
 
  
+ useEffect(()=>{
+  if (!rideId) return;
+  const fetchLocation= async()=>{
+    const res = await fetch(`/api/ride/${rideId}/location`);
+    const data = await res.json();
+    console.log("driver location:", data.location); 
+    setDriverLocation(data.location);
+  };
+  fetchLocation();                       
+  const interval = setInterval(fetchLocation, 10000);
+  return () => clearInterval(interval);  
+}, [rideId]);
+
 
   function handleSubmit() {
     if (!pickup || !destination) return;
@@ -29,8 +46,18 @@ export default function Page() {
   }
     const fetchInfo = async ()=>{
       try{
-        const res = await axios.post("/api/ride", data)
-        
+        const res = await fetch("/api/ride", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),});
+
+      const result = await res.json();
+      setRideId(result.rideId);
+      if (result.assignedDriver === null) {
+      setNoDriver(true);      
+      } else {
+      setNoDriver(false);
+}
       }catch(error){
         console.log(error);
       }
@@ -41,6 +68,8 @@ export default function Page() {
   function reset(){
     setPickup(null);
     setDestination(null);
+    setDriverLocation(null);
+    setNoDriver(false);
   }
   
 
@@ -60,13 +89,19 @@ export default function Page() {
  <h3>Trip</h3>
           <p>Pickup: {pickup ? "Selected" : "Click on map"}</p>
           <p>Destination: {destination ? "Selected" : "Click on map"}</p>
+          
         </div>
 
       <button className={styles.button} onClick={handleSubmit}>Request Ride</button>
       <button className={styles.resetButton} onClick={reset}>reset</button>
+      {noDriver && <p style={{ color: "red" }}>No driver available, please try again.</p>}
     </div>
  <div className={styles.map}>
-        <Map setPickup={setPickup} setDestination={setDestination} pickup={pickup} destination={destination} />
+        <Map setPickup={setPickup} setDestination={setDestination} pickup={pickup} destination={destination}  driverLocation={
+    driverLocation
+      ? { lat: Number(driverLocation.current_lat), lng: Number(driverLocation.current_lng) }
+      : null
+  } />
       </div>    
       </div>    
     </>
