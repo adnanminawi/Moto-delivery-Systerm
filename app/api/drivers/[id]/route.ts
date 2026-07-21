@@ -8,8 +8,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         [id]);
         const [rides] = await db.query("SELECT r.id, c.name AS customer_name, r.pickup_address, r.destination_address, r.status FROM ride r JOIN customer c ON r.customer_id = c.id WHERE r.driver_id = ?",
         [id]);
-
-        return Response.json({ driver_Profile : driver, rides});
+       const [totalRides]: any = await db.query(
+  "SELECT COUNT(*) AS count FROM ride WHERE driver_id = ? AND status = 'completed'",
+  [id]
+);
+        
+    return Response.json({
+      driver_Profile: driver,
+      rides,
+      totalRides: totalRides[0].count
+    });
 
     }catch(error){
     return Response.json({error: String(error) }, { status: 500 });

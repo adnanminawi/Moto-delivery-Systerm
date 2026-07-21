@@ -12,7 +12,7 @@ export default function Home() {
     {
       label: "Driver",
       desc: "Go online, receive ride requests, and start earning.",
-      href: "/driver",
+     href: "/driver/login",
       icon: "🏍️",
     },
     {
