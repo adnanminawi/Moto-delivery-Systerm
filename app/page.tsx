@@ -18,7 +18,7 @@ export default function Home() {
     {
       label: "Admin",
       desc: "Monitor drivers, rides, and live activity.",
-      href: "/admin",
+      href: "/admin/login",
       icon: "📊",
     },
   ];
