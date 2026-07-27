@@ -50,7 +50,7 @@ export default function Sidebar() {
     localStorage.removeItem("user");
 
     // 🚀 redirect to login
-    router.push("/login");
+    router.push("/admin/login");
   };
 
   return (
