@@ -52,8 +52,11 @@ const destination_address = await getAddress(destination_lat, destination_lng);
       await db.query("UPDATE ride SET status = 'no_driver_found' WHERE id = ?", [rideId]);
     }
 
+    const [driv] = await db.query<RowDataPacket[]>("SELECT d.name, d.phone FROM ride r JOIN driver d ON driver_id=d.id WHERE r.id=?",
+      [rideId]);
+
     return Response.json(
-      { ok: true, rideId, assignedDriver: driver?.id ?? null },
+      { ok: true, driver: driv[0] ?? null, rideId, assignedDriver: driver?.id ?? null },
       { status: 201 }
     );
   } catch (error) {
