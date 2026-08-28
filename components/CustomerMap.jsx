@@ -37,8 +37,8 @@ const driverIcon = L.icon({
 export default function CustomerMap({ driverLocation,pickup, destination, setPickup, setDestination }) {  
     return(
 
-        <div>
-            <MapContainer center={[33.8938, 35.5018]} zoom={10} style={{height : "500px"}}>
+        <div style={{ height: "100%", width: "100%" }}>
+            <MapContainer center={[33.8938, 35.5018]} zoom={10} style={{height: "100%", width: "100%"}}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <ClickHandler pickup={pickup} destination={destination} setPickup={setPickup} setDestination={setDestination}/>
             {pickup && <Marker position={pickup} icon={icon} />}

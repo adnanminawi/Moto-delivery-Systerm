@@ -20,7 +20,12 @@ export default function Page() {
       const res = await fetch(`/api/ride/${rideId}/location`);
       const data = await res.json();
       setDriverLocation(data.location);
-    };
+       if (data.location) {
+    setDriverInfo({ Name: data.location.name, Phone: data.location.phone });
+  } else {
+    setDriverInfo({ Name: "", Phone: "" });  
+  }
+}
     fetchLocation();
     const interval = setInterval(fetchLocation, 10000);
     return () => clearInterval(interval);
@@ -47,7 +52,6 @@ export default function Page() {
         });
 
         const result = await res.json();
-        setDriverInfo({Name: result.driver.name, Phone: result.driver.phone});
         setRideId(result.rideId);
         setNoDriver(result.assignedDriver === null);
       } catch (error) {
@@ -105,6 +109,8 @@ export default function Page() {
           Reset
         </button>
         {noDriver && <p className="text-red-500 text-sm">No driver available, please try again.</p>}
+
+        
 {rideId && !noDriver && driverInfo.Name && (
         <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-white p-4 rounded-xl w-[280px] z-[1000] shadow-lg border-l-4 border-[#f4c542]">
             <h3 className="text-[15px] font-bold mb-2">🚨 Driver Info</h3>
